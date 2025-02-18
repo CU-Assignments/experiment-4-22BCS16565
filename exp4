@@ -1,40 +1,141 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
-public class SquareRootCalculator {
+class Employee {
+    int id;
+    String name;
+    double salary;
+
+    public Employee(int id, String name, double salary) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + ", Name: " + name + ", Salary: " + salary;
+    }
+}
+
+public class EmployeeManagement {
 
     public static void main(String[] args) {
+        ArrayList<Employee> employees = new ArrayList<>();
         Scanner input = new Scanner(System.in);
 
-        while (true) { // Loop to allow multiple calculations
-            try {
-                System.out.print("Enter a number (or type 'exit' to quit): ");
-                if (input.hasNext("exit")) {
-                    break; // Exit the loop if the user types 'exit'
-                }
+        while (true) {
+            System.out.println("\nEmployee Management System");
+            System.out.println("1. Add Employee");
+            System.out.println("2. Update Employee");
+            System.out.println("3. Remove Employee");
+            System.out.println("4. Search Employee");
+            System.out.println("5. Display All Employees");  // Added display option
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
 
-                if (!input.hasNextDouble()) {  //Check if the input is a valid double
-                    String invalidInput = input.next(); // Consume the invalid input
-                    throw new java.util.InputMismatchException("Invalid input. Please enter a number.");
-                }
+            int choice = input.nextInt();
+            input.nextLine(); // Consume newline
 
-                double number = input.nextDouble();
-
-                if (number < 0) {
-                    throw new IllegalArgumentException("Cannot calculate the square root of a negative number.");
-                }
-
-                double squareRoot = Math.sqrt(number);
-                System.out.println("The square root of " + number + " is " + squareRoot);
-
-            } catch (IllegalArgumentException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (java.util.InputMismatchException e) {
-                System.out.println("Error: " + e.getMessage());
-            } finally {
-                input.nextLine(); // Clear the input buffer (important for handling incorrect input)
+            switch (choice) {
+                case 1:
+                    addEmployee(employees, input);
+                    break;
+                case 2:
+                    updateEmployee(employees, input);
+                    break;
+                case 3:
+                    removeEmployee(employees, input);
+                    break;
+                case 4:
+                    searchEmployee(employees, input);
+                    break;
+                case 5:
+                    displayEmployees(employees);
+                    break;
+                case 6:
+                    System.out.println("Exiting...");
+                    input.close(); // Close the scanner
+                    return; // Exit the program
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
-        input.close(); // Close the scanner to release resources
-        System.out.println("Exiting the program.");
+    }
+
+    static void addEmployee(ArrayList<Employee> employees, Scanner input) {
+        System.out.print("Enter employee ID: ");
+        int id = input.nextInt();
+        input.nextLine(); // Consume newline
+        System.out.print("Enter employee name: ");
+        String name = input.nextLine();
+        System.out.print("Enter employee salary: ");
+        double salary = input.nextDouble();
+
+        employees.add(new Employee(id, name, salary));
+        System.out.println("Employee added successfully.");
+    }
+
+    static void updateEmployee(ArrayList<Employee> employees, Scanner input) {
+        System.out.print("Enter employee ID to update: ");
+        int idToUpdate = input.nextInt();
+        input.nextLine(); // Consume newline
+
+        for (Employee employee : employees) {
+            if (employee.id == idToUpdate) {
+                System.out.print("Enter new name: ");
+                String newName = input.nextLine();
+                System.out.print("Enter new salary: ");
+                double newSalary = input.nextDouble();
+                employee.name = newName;
+                employee.salary = newSalary;
+                System.out.println("Employee updated successfully.");
+                return; // Employee found and updated, exit the method
+            }
+        }
+
+        System.out.println("Employee not found.");
+    }
+
+    static void removeEmployee(ArrayList<Employee> employees, Scanner input) {
+        System.out.print("Enter employee ID to remove: ");
+        int idToRemove = input.nextInt();
+        input.nextLine(); // Consume newline
+
+        for (int i = 0; i < employees.size(); i++) {
+            if (employees.get(i).id == idToRemove) {
+                employees.remove(i);
+                System.out.println("Employee removed successfully.");
+                return; // Employee found and removed, exit the method
+            }
+        }
+
+        System.out.println("Employee not found.");
+    }
+
+
+    static void searchEmployee(ArrayList<Employee> employees, Scanner input) {
+        System.out.print("Enter employee ID to search: ");
+        int idToSearch = input.nextInt();
+        input.nextLine();
+
+        for (Employee employee : employees) {
+            if (employee.id == idToSearch) {
+                System.out.println("Employee found: " + employee);
+                return;
+            }
+        }
+        System.out.println("Employee not found.");
+    }
+
+    static void displayEmployees(ArrayList<Employee> employees) {
+        if (employees.isEmpty()) {
+            System.out.println("No employees to display.");
+        } else {
+            System.out.println("\n--- Employee List ---");
+            for (Employee employee : employees) {
+                System.out.println(employee);
+            }
+        }
     }
 }
